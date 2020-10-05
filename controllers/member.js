@@ -20,15 +20,26 @@ exports.membersIndex = async (req, res, next) => {
     const page = parseInt(req.body.page);
     const search = req.body.search;
     const query = {
+      where: {
+        profileType: {
+          [Op.eq]: 'Anggota',
+        },
+      },
       limit: number,
       offset: (page - 1) * number || 0,
+      order: [['activeStatus', 'DESC']],
     };
     if (search) {
       query.where = {
-        [Op.or]: [
-          { code: { [Op.like]: search } },
-          { name: { [Op.substring]: search } },
-          { fullname: { [Op.substring]: search } },
+        [Op.and]: [
+          { profileType: { [Op.eq]: 'Anggota' } },
+          {
+            [Op.or]: [
+              { code: { [Op.substring]: search } },
+              { name: { [Op.substring]: search } },
+              { fullname: { [Op.substring]: search } },
+            ],
+          },
         ],
       };
     }
@@ -133,7 +144,7 @@ exports.memberGet = async (req, res, next) => {
       return next(checkErr);
     }
     const getMember = await Profile.findOne({
-      where: { userId: memberId },
+      where: { code: memberId },
     });
     if (!getMember) {
       const error = new Error('Anggota tidak ditemukan!');
@@ -159,7 +170,7 @@ exports.memberEdit = async (req, res, next) => {
     // change req.body into object to pass into member.update()
     const obj = JSON.parse(JSON.stringify(req.body));
     const memberId = req.params.memberId;
-    const profile = await Profile.findOne({ where: { userId: memberId } });
+    const profile = await Profile.findOne({ where: { code: memberId } });
     if (!profile) {
       const error = new Error('Anggota tidak ditemukan!');
       error.statusCode = 404;
@@ -172,7 +183,7 @@ exports.memberEdit = async (req, res, next) => {
       return next(error);
     }
     const getMember = await Profile.findOne({
-      where: { userId: memberId },
+      where: { code: memberId },
     });
     res.status(200).json({
       message: 'ok',
@@ -208,14 +219,14 @@ exports.memberPhotoUpload = async (req, res, next) => {
     }_${req.body.filename.replace(',', '')}`;
     // move image into profile folder
     const moFile = await fse.move(req.file.path, resizeInput);
-    if(moFile) {
+    if (moFile) {
       console.log('File successfully moved!');
     }
     // resize file
     const reFile = await sharp(resizeInput)
       .resize({ height: 200, width: 200 })
       .toFile(resizeOutput);
-    if(reFile) {
+    if (reFile) {
       console.log('File successfully resized!');
       // delete if successfull
       clearImage(resizeInput);
@@ -260,7 +271,7 @@ exports.memberPhotoDelete = async (req, res, next) => {
     if (checkErr) {
       return next(checkErr);
     }
-    const member = await Profile.findOne({where: {userId: memberId}});
+    const member = await Profile.findOne({ where: { userId: memberId } });
     let filteredPhotos;
     if (!member) {
       const error = new Error('Anggota tidak ditemukan!');
@@ -268,8 +279,8 @@ exports.memberPhotoDelete = async (req, res, next) => {
       return next(error);
     }
     filteredPhotos = member.arrPhotos.split(',').filter((p) => {
-      return p !== photo
-    })
+      return p !== photo;
+    });
     clearImage(photo);
     const memberPhoto = {
       arrPhotos: filteredPhotos.toString(),
@@ -281,18 +292,68 @@ exports.memberPhotoDelete = async (req, res, next) => {
       return next(error);
     }
     const getMember = await Profile.findOne({
-      where: {userId: updateMember.userId},
+      where: { userId: updateMember.userId },
     });
     res.status(200).json({
       message: 'ok',
       member: getMember,
-    })
+    });
   } catch (error) {
     console.log(error);
     next(error);
   }
-}
-// url: /localhost:3000/api/members/is-staff method: 'GET'
+};
+// url: /localhost:3000/api/members/delete/:memberId method: 'POST
+exports.memberDelete = async (req, res, next) => {
+  const memberId = req.params.memberId;
+  try {
+    const checkErr = await authScope(req.userId, 'user', 'd');
+    if (checkErr) {
+      return next(checkErr);
+    }
+    const checkUser = await User.findOne({
+      where: { userId: memberId },
+      include: [{ model: Profile }],
+    });
+    if (!checkUser) {
+      const error = new Error('Anggota tidak ditemukan!');
+      error.statusCode = 404;
+      return next(error);
+    }
+    if (checkUser.arrRoles === 'SA') {
+      const error = new Error(`kamu tidak memiliki otoritas!`);
+      error.statusCode = 401;
+      return next(error);
+    }
+    const data = JSON.stringify(checkUser.toJSON());
+    const dataRecyclebin = new Recyclebin({
+      itemId: checkUser.id,
+      category: 'User',
+      data: data,
+      deletedBy: req.userId,
+    });
+    const newRecyclebin = await dataRecyclebin.save();
+    if (!newRecyclebin) {
+      const error = new Error('Gagal menghapus user!');
+      error.statusCode = 404;
+      return next(error);
+    }
+    const checkDelete = checkUser.destroy();
+    if (!checkDelete) {
+      const error = new Error('Gagal menghapus user!');
+      error.statusCode = 404;
+      return next(error);
+    }
+    res.status(200).json({
+      message: 'ok',
+      userId: newRecyclebin.itemId,
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+// url: /localhost:3000/api/members/is-staff method: 'POST'
 exports.membersIsStaff = async (req, res, next) => {
   try {
     const checkErr = await authScope(req.userId, 'pengurus', 'v');
@@ -300,7 +361,7 @@ exports.membersIsStaff = async (req, res, next) => {
       return next(checkErr);
     }
     let fetchData = await Profile.findAndCountAll({
-      where: {profileType: 'Pengurus'}
+      where: { profileType: 'Pengurus' },
     });
     if (!fetchData) {
       const error = new Error('Pengurus tidak ditemukan!');
@@ -454,56 +515,6 @@ exports.membersIsStaff = async (req, res, next) => {
 //       user: getUser,
 //       profile: getUser.profile,
 //       arrAuth: getRoles,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     next(error);
-//   }
-// };
-// // url: /localhost:3000/api/users/delete/:userId method: 'POST'
-// exports.userDelete = async (req, res, next) => {
-//   const userId = req.params.userId;
-//   try {
-//     const checkErr = await authScope(req.userId, 'user', 'd');
-//     if (checkErr) {
-//       return next(checkErr);
-//     }
-//     const checkUser = await User.findOne({
-//       where: { id: userId },
-//       include: [{ model: Profile }],
-//     });
-//     if (!checkUser) {
-//       const error = new Error('User tidak ditemukan!');
-//       error.statusCode = 404;
-//       return next(error);
-//     }
-//     if (checkUser.arrRoles === 'SA') {
-//       const error = new Error(`kamu tidak memiliki otoritas!`);
-//       error.statusCode = 401;
-//       return next(error);
-//     }
-//     const data = JSON.stringify(checkUser.toJSON());
-//     const dataRecyclebin = new Recyclebin({
-//       itemId: checkUser.id,
-//       category: 'User',
-//       data: data,
-//       deletedBy: req.userId,
-//     });
-//     const newRecyclebin = await dataRecyclebin.save();
-//     if (!newRecyclebin) {
-//       const error = new Error('Gagal menghapus user!');
-//       error.statusCode = 404;
-//       return next(error);
-//     }
-//     const checkDelete = checkUser.destroy();
-//     if (!checkDelete) {
-//       const error = new Error('Gagal menghapus user!');
-//       error.statusCode = 404;
-//       return next(error);
-//     }
-//     res.status(200).json({
-//       message: 'ok',
-//       userId: newRecyclebin.itemId,
 //     });
 //   } catch (error) {
 //     console.log(error);

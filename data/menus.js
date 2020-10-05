@@ -139,7 +139,7 @@ const menus = [
       {
         id: 'profil-user',
         m: 'pengaturan-umum',
-        submenuTitle: 'Profil User',
+        submenuTitle: 'Profil',
         alias: 'pengaturan-user/profil',
         subUrl: '/pengaturan-user/profil',
       },

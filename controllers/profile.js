@@ -12,7 +12,7 @@ exports.profileGet = async (req, res, next) => {
   const userId = req.params.userId;
   try {
     if (req.userId + '' !== userId + '') {
-      const error = new Error(`You're not authorized!`);
+      const error = new Error(`Anda tidak memiliki otoritas!`);
       error.statusCode = 401;
       return next(error);
     }
@@ -21,7 +21,7 @@ exports.profileGet = async (req, res, next) => {
       include: [{ model: Profile }],
     });
     if (!getUser) {
-      const error = new Error('User could not be found!');
+      const error = new Error('User tidak ditemukan!');
       error.statusCode = 404;
       return next(error);
     }
@@ -39,7 +39,7 @@ exports.profileEdit = async (req, res, next) => {
   const userId = req.params.userId;
   try {
     if (req.userId + '' !== userId + '') {
-      const error = new Error(`You're not authorized!`);
+      const error = new Error(`Anda tidak memiliki otoritas!`);
       error.statusCode = 401;
       return next(error);
     }
@@ -47,20 +47,16 @@ exports.profileEdit = async (req, res, next) => {
     const obj = JSON.parse(JSON.stringify(req.body));
     const profile = await Profile.findOne({ where: { userId: userId } });
     if (!profile) {
-      const error = new Error('User could not be found!');
+      const error = new Error('User tidak ditemukan!');
       error.statusCode = 404;
       return next(error);
     }
-
-    // const fieldsToExclude = ['password', 'sensitive_info', 'attribute_not_allowed_due_to_user_role']    
-    // const myFields = Object.keys(MyModel.rawAttributes).filter( s => !fildsToExclude.includes(s))
-    // MyModel.update(newValue, {fields: myFields})
     const fieldsToExclude = ['id', 'profileType', 'code', 'activeStatus', 'name', 'fullname', 'joinDate', 'pob', 'dob', 'email', 'phone', 'address', 'gender'];
     const updateFields = Object.keys(Profile.rawAttributes).filter(s => !fieldsToExclude.includes(s));
 
     const updatedProfile = await profile.update(obj, {fields: updateFields});
     if (!updatedProfile) {
-      const error = new Error('Update profile failed!');
+      const error = new Error('Update profil gagal!');
       error.statusCode = 404;
       return next(error);
     }
@@ -82,18 +78,18 @@ exports.profilePictureUpload = async (req, res, next) => {
   const userId = req.params.userId;
   try {
     if (req.userId + '' !== userId + '') {
-      const error = new Error(`You're not authorized!`);
+      const error = new Error(`Anda tidak memiliki otoritas!`);
       error.statusCode = 401;
       return next(error);
     }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      const error = new Error('Validation failed!');
+      const error = new Error('Validasi gagal!');
       error.statusCode = 422;
       return next(error);
     }
     if (!req.file) {
-      const error = new Error('No image provided.');
+      const error = new Error('Foto tidak dapat diproses.');
       error.statusCode = 422;
       return next(error);
     }
@@ -102,11 +98,11 @@ exports.profilePictureUpload = async (req, res, next) => {
     }_${req.body.filename.replace(',', '')}`;
     const moveFile = await fse.move(req.file.path, filteredFilename);
     if (moveFile) {
-      console.log('File successfully moved!');
+      console.log('File berhasil dipindahkan!');
     }
     let profile = await Profile.findOne({ where: { userId: userId } });
     if (!profile) {
-      const error = new Error('User could not be found');
+      const error = new Error('User tidak ditemukan');
       error.statusCode = 404;
       return next(error);
     }
@@ -119,7 +115,7 @@ exports.profilePictureUpload = async (req, res, next) => {
     };
     const updatedProfile = await profile.update(profilePic);
     if (!updatedProfile) {
-      const error = new Error('Update profile picture failed!');
+      const error = new Error('Update foto profil gagal!');
       error.statusCode = 404;
       return next(error);
     }
@@ -141,20 +137,20 @@ exports.profilePictureDelete = async (req, res, next) => {
   const photo = req.body.photo;
   try {
     if (req.userId + '' !== userId + '') {
-      const error = new Error(`You're not authorized!`);
+      const error = new Error(`Anda tidak memiliki otoritas!`);
       error.statusCode = 401;
       return next(error);
     }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      const error = new Error('Validation failed!');
+      const error = new Error('Validasi gagal!');
       error.statusCode = 422;
       return next(error);
     }
     const profile = await Profile.findOne({ where: { userId: userId } });
     let filteredPhotos;
     if (!profile) {
-      const error = new Error('User could not be found');
+      const error = new Error('User tidak ditemukan');
       error.statusCode = 404;
       return next(error);
     }
@@ -167,7 +163,7 @@ exports.profilePictureDelete = async (req, res, next) => {
     };
     const updateProfile = await profile.update(profilePic);
     if (!updateProfile) {
-      const error = new Error('Delete profile picture failed!');
+      const error = new Error('Hapus foto profil gagal!');
       error.statusCode = 404;
       return next(error);
     }
@@ -190,14 +186,14 @@ exports.profilePasswordReset = async (req, res, next) => {
   const updatedBy = req.body.updatedBy;
   try {
     if (req.userId + '' !== userId + '') {
-      const error = new Error(`You're not authorized!`);
+      const error = new Error(`Anda tidak memiliki otoritas!`);
       error.statusCode = 401;
       return next(error);
     }
     const hashPass = await bcrypt.hash(password, 12);
     const user = await User.findByPk(userId);
     if (!user) {
-      const error = new Error('User could not be found');
+      const error = new Error('User tidak ditemukan');
       error.statusCode = 404;
       return next(error);
     }
@@ -206,7 +202,7 @@ exports.profilePasswordReset = async (req, res, next) => {
       updatedBy: updatedBy,
     });
     if (!updatedUser) {
-      const error = new Error('Reset password failed');
+      const error = new Error('Reset password gagal');
       error.statusCode = 404;
       return next(error);
     }

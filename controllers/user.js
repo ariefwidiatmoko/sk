@@ -23,17 +23,11 @@ exports.usersIndex = async (req, res, next) => {
     };
     if (search) {
       query.where = {
-        username: { [Op.substring]: search },
+        [Op.or]: [
+          {username: { [Op.substring]: search }},
+          {'$Profile.name$': { [Op.substring]: search }},
+        ]
       };
-      query.include = [
-        {
-          model: Profile,
-          attributes: ['name'],
-          where: {
-            name: { [Op.substring]: search },
-          },
-        },
-      ];
     }
     const fetchData = await User.scope('withoutPassword').findAndCountAll(
       query

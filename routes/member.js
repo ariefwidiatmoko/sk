@@ -16,6 +16,8 @@ router.post('/edit/:memberId', isAuth, memberController.memberEdit);
 router.post('/photo-upload/:memberId', isAuth, memberController.memberPhotoUpload);
 // // url: /localhost:3000/api/members/photo-delete/:memberId method: 'POST'
 router.post('/photo-delete/:memberId', isAuth, memberController.memberPhotoDelete);
+// // url: /localhost:3000/api/members/delete/:memberId method: 'POST'
+router.post('/delete/:memberId', isAuth, memberController.memberDelete);
 // url: /localhost:3000/api/members/is-staff method: 'POST'
 router.post('/is-staff', isAuth, memberController.membersIsStaff);
 // // url: /localhost:3000/api/users/role-edit/:userId method: 'POST'
