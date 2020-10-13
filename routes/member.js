@@ -10,7 +10,7 @@ router.post('/', isAuth, memberController.membersIndex);
 router.post('/create', isAuth, memberController.memberCreate);
 // url: /localhost:3000/api/members/:memberId method: 'GET'
 router.get('/:memberId', isAuth, memberController.memberGet);
-// // url: /localhost:3000/api/users/edit/:userId method: 'POST'
+// // url: /localhost:3000/api/members/edit/:userId method: 'POST'
 router.post('/edit/:memberId', isAuth, memberController.memberEdit);
 // // url: /localhost:3000/api/members/photo-upload/:memberId method: 'POST'
 router.post('/photo-upload/:memberId', isAuth, memberController.memberPhotoUpload);
@@ -18,6 +18,8 @@ router.post('/photo-upload/:memberId', isAuth, memberController.memberPhotoUploa
 router.post('/photo-delete/:memberId', isAuth, memberController.memberPhotoDelete);
 // // url: /localhost:3000/api/members/delete/:memberId method: 'POST'
 router.post('/delete/:memberId', isAuth, memberController.memberDelete);
+// // url: /localhost:3000/api/members/import method: 'POST'
+router.post('/import', isAuth, memberController.membersImport);
 // url: /localhost:3000/api/members/is-staff method: 'POST'
 router.post('/is-staff', isAuth, memberController.membersIsStaff);
 // // url: /localhost:3000/api/users/role-edit/:userId method: 'POST'
@@ -26,7 +28,5 @@ router.post('/is-staff', isAuth, memberController.membersIsStaff);
 // router.post('/create', isAuth, userController.userCreate);
 // // url: /localhost:3000/api/users/delete/:userId method: 'POST'
 // router.post('/delete/:userId', isAuth, userController.userDelete);
-// // url: /localhost:3000/api/users/export method: 'POST'
-// router.post('/export', isAuth, userController.usersExport);
 
 module.exports = router;

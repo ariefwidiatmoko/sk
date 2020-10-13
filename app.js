@@ -3,7 +3,9 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const sequelize = require('./util/database');
+const Account = require('./models/account');
 const User = require('./models/user');
+const Role = require('./models/role');
 const Profile = require('./models/profile');
 const Sessionjwt = require('./models/sessionjwt');
 const multer = require('multer');
@@ -12,6 +14,7 @@ const helmet = require('helmet');
 
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
+const accountRoutes = require('./routes/account');
 const memberRoutes = require('./routes/member');
 const userRoutes = require('./routes/user');
 const roleRoutes = require('./routes/role');
@@ -62,6 +65,7 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/members', memberRoutes);
+app.use('/api/accounts', accountRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/recyclebins', recyclebinRoutes);
 app.use('/api/roles', roleRoutes);
@@ -77,6 +81,10 @@ app.use((err, req, res, next) => {
 
 Profile.belongsTo(User);
 User.hasOne(Profile, { foreignKey: 'userId' });
+User.hasMany(Account, { foreignKey: 'userId' });
+Account.belongsTo(User);
+Role.belongsTo(User);
+User.hasMany(Role, { foreignKey: 'userId' });
 Sessionjwt.belongsTo(User);
 User.hasOne(Sessionjwt, { foreignKey: 'userId' });
 

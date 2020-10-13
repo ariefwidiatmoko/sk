@@ -9,6 +9,8 @@ const fse = require('fs-extra');
 const path = require('path');
 const sharp = require('sharp');
 const { validationResult } = require('express-validator/check');
+var { customAlphabet } = require("nanoid");
+const NUM_ALPHABET = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 // url: /localhost:3000/api/members method: 'POST'
 exports.membersIndex = async (req, res, next) => {
   try {
@@ -27,7 +29,7 @@ exports.membersIndex = async (req, res, next) => {
       },
       limit: number,
       offset: (page - 1) * number || 0,
-      order: [['activeStatus', 'DESC']],
+      order: [['activeStatus', 'DESC'],['name', 'ASC']],
     };
     if (search) {
       query.where = {
@@ -307,7 +309,7 @@ exports.memberPhotoDelete = async (req, res, next) => {
 exports.memberDelete = async (req, res, next) => {
   const memberId = req.params.memberId;
   try {
-    const checkErr = await authScope(req.userId, 'user', 'd');
+    const checkErr = await authScope(req.userId, 'anggota', 'd');
     if (checkErr) {
       return next(checkErr);
     }
@@ -347,6 +349,74 @@ exports.memberDelete = async (req, res, next) => {
     res.status(200).json({
       message: 'ok',
       userId: newRecyclebin.itemId,
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+// // url: /localhost:3000/api/members/import method: 'POST'
+exports.membersImport = async (req, res, next) => {
+  const userId = req.userId;
+  try {
+    const checkErr = await authScope(userId, 'anggota', 'c');
+    if (checkErr) {
+      return next(checkErr);
+    }
+    const members = JSON.parse(req.body.members);
+    const createdBy = userId;
+    let membersError = [];
+    let membersSuccess = [];
+    const newDate = new Date();
+    const year = newDate.getFullYear() + '';
+    const yy = year.slice(2, 4);
+    const month = newDate.getMonth() + 1 + '';
+    const mm = month.length > 1 ? month : 0 + month;
+    for (let i = 0; i < members.length; i++) {
+      let ID = customAlphabet(NUM_ALPHABET, 5);
+      let code = yy + mm + '-' + ID();
+      let usernameData = code;
+      let nameData = members[i].Panggilan;
+      let passwordData = members[i].Password + '';
+      const checkUsername = await User.findOne({
+        where: { username: usernameData },
+      });
+      if (checkUsername) {
+        membersError.push(nameData);
+      } else {
+        const hashPass = await bcrypt.hash(passwordData, 12);
+        const data = new User({
+          username: usernameData,
+          password: hashPass,
+          createdBy: createdBy,
+        });
+        const newUser = await data.save();
+        const profile = new Profile({
+          profileType: 'Anggota',
+          code: usernameData,
+          name: nameData,
+          fullname: members[i].Nama_Lengkap,
+          phone: members[i].No_Telpon,
+          gender: members[i].Jenis_Kelamin === 'L' ? 'male': 'female',
+          pob: members[i].Tempat_Lahir,
+          dob: new Date((members[i].Tanggal_Lahir - (25567 + 2))*86400*1000).toISOString(),
+          religion: members[i].Agama,
+          maritalStatus: members[i].Status_Kawin,
+          occupation: members[i].Pekerjaan,
+          address: members[i].Alamat,
+          activeStatus: true,
+          joinDate: new Date().toISOString(),
+          userId: newUser.id,
+          createdBy: createdBy,
+        });
+        const newProfile = await profile.save();
+        membersSuccess.push(nameData);
+      }
+    };
+    res.status(201).json({
+      message: 'ok',
+      membersSuccess: membersSuccess,
+      membersError: membersError,
     });
   } catch (error) {
     console.log(error);
@@ -515,56 +585,6 @@ exports.membersIsStaff = async (req, res, next) => {
 //       user: getUser,
 //       profile: getUser.profile,
 //       arrAuth: getRoles,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     next(error);
-//   }
-// };
-// // url: /localhost:3000/api/users/export method: 'POST'
-// exports.usersExport = async (req, res, next) => {
-//   const userId = req.userId;
-//   try {
-//     const checkErr = await authScope(userId, 'user', 'c');
-//     if (checkErr) {
-//       return next(checkErr);
-//     }
-//     const users = JSON.parse(req.body.users);
-//     const createdBy = userId;
-//     let usersError = [];
-//     let usersSuccess = [];
-//     for (let i = 0; i < users.length; i++) {
-//       let usernameData = users[i].Username;
-//       let nameData = users[i].Panggilan;
-//       let passwordData = users[i].Password + '';
-//       const checkUsername = await User.findOne({
-//         where: { username: usernameData },
-//       });
-//       if (checkUsername) {
-//         usersError.push(usernameData);
-//       } else {
-//         const hashPass = await bcrypt.hash(passwordData, 12);
-//         const data = new User({
-//           username: usernameData,
-//           password: hashPass,
-//           createdBy: createdBy,
-//         });
-//         const newUser = await data.save();
-//         const profile = new Profile({
-//           profileType: 'profileType',
-//           name: nameData,
-//           userId: newUser.id,
-//           createdBy: createdBy,
-//         });
-//         const newProfile = await profile.save();
-//         usersSuccess.push(usernameData);
-//       }
-//     }
-//     console.log('Error', usersError, 'Success', usersSuccess);
-//     res.status(201).json({
-//       message: 'ok',
-//       usersSuccess: usersSuccess,
-//       usersError: usersError,
 //     });
 //   } catch (error) {
 //     console.log(error);

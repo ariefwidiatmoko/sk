@@ -45,6 +45,36 @@ const menus = [
     ],
   },
   {
+    id: 'keuangan',
+    icon: 'donate',
+    title: 'Keuangan',
+    alias: 'keuangan',
+    url: '/keuangan',
+    subm: [
+      {
+        id: 'akun',
+        m: 'keuangan',
+        submenuTitle: 'Akun',
+        alias: 'keuangan/akun',
+        subUrl: '/keuangan/akun',
+      },
+      {
+        id: 'simpanan',
+        m: 'keuangan',
+        submenuTitle: 'Simpanan',
+        alias: 'keuangan/simpanan',
+        subUrl: '/keuangan/simpanan',
+      },
+      {
+        id: 'pinjaman',
+        m: 'keuangan',
+        submenuTitle: 'Pinjaman',
+        alias: 'keuangan/pinjaman',
+        subUrl: '/keuangan/pinjaman',
+      },
+    ],
+  },
+  {
     id: 'administrasi',
     icon: 'pen-square',
     title: 'Administrasi',
@@ -92,20 +122,6 @@ const menus = [
         submenuTitle: 'Notulen Rapat',
         alias: 'administrasi/notulen-rapat',
         subUrl: '/administrasi/notulen-rapat',
-      },
-      {
-        id: 'notulen-rapat-pengurus',
-        m: 'administrasi',
-        submenuTitle: 'Notulen Rapat Pengurus',
-        alias: 'administrasi/notulen-rapat-pengurus',
-        subUrl: '/administrasi/notulen-rapat-pengurus',
-      },
-      {
-        id: 'notulen-rapat-badan-pengawas',
-        m: 'administrasi',
-        submenuTitle: 'Notulen Rapat Badan Pengawas',
-        alias: 'administrasi/notulen-rapat-badan-pengawas',
-        subUrl: '/administrasi/notulen-rapat-badan-pengawas',
       },
       {
         id: 'anjuran-pejabat-koperasi',

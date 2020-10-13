@@ -22,7 +22,7 @@ router.post('/role-edit/:userId', isAuth, userController.userRoleEdit);
 router.post('/create', isAuth, userController.userCreate);
 // url: /localhost:3000/api/users/delete/:userId method: 'POST'
 router.post('/delete/:userId', isAuth, userController.userDelete);
-// url: /localhost:3000/api/users/export method: 'POST'
-router.post('/export', isAuth, userController.usersExport);
+// url: /localhost:3000/api/users/import method: 'POST'
+router.post('/import', isAuth, userController.usersImport);
 
 module.exports = router;

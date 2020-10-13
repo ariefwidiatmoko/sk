@@ -54,6 +54,10 @@ exports.login = async (req, res, next) => {
             c: false,
             u: false,
             d: false,
+            r: false,
+            h: false,
+            e: false,
+            i: false,
           };
           menu.push(newObj0);
           m.subm.forEach((item) => {
@@ -63,6 +67,10 @@ exports.login = async (req, res, next) => {
               c: true,
               u: true,
               d: true,
+              r: true,
+              h: true,
+              e: true,
+              i: true,
             };
             subm.push(newObj1);
           });
@@ -73,6 +81,10 @@ exports.login = async (req, res, next) => {
             c: true,
             u: true,
             d: true,
+            r: true,
+            h: true,
+            e: true,
+            i: true,
           };
           menu.push(newObj2);
         }
@@ -114,6 +126,10 @@ exports.login = async (req, res, next) => {
               let c = false;
               let u = false;
               let d = false;
+              let r = false;
+              let h = false;
+              let e = false;
+              let i = false;
               if (menu[j].v === true || detailMenu[i][j].v === true) {
                 v = true;
               }
@@ -126,10 +142,26 @@ exports.login = async (req, res, next) => {
               if (menu[j].d === true || detailMenu[i][j].d === true) {
                 d = true;
               }
+              if (menu[j].r === true || detailMenu[i][j].r === true) {
+                r = true;
+              }
+              if (menu[j].h === true || detailMenu[i][j].h === true) {
+                h = true;
+              }
+              if (menu[j].e === true || detailMenu[i][j].e === true) {
+                e = true;
+              }
+              if (menu[j].i === true || detailMenu[i][j].i === true) {
+                i = true;
+              }
               menu[j].v = v;
               menu[j].c = c;
               menu[j].u = u;
               menu[j].d = d;
+              menu[j].r = r;
+              menu[j].h = h;
+              menu[j].e = e;
+              menu[j].i = i;
             }
           }
         }
@@ -156,12 +188,20 @@ exports.login = async (req, res, next) => {
               let c = false;
               let u = false;
               let d = false;
+              let r = false;
+              let h = false;
+              let e = false;
+              let i = false;
               if(checkNewObj2) {
                 id = checkNewObj2.id;
                 v = checkNewObj2.v;
                 c = checkNewObj2.c;
                 u = checkNewObj2.u;
                 d = checkNewObj2.d;
+                r = checkNewObj2.r;
+                h = checkNewObj2.h;
+                e = checkNewObj2.e;
+                i = checkNewObj2.i;
                 if(newObj1[j].v === true) {
                   v = true;
                 }
@@ -174,17 +214,33 @@ exports.login = async (req, res, next) => {
                 if(newObj1[j].d === true) {
                   v = true;
                 }
+                if(newObj1[j].r === true) {
+                  v = true;
+                }
+                if(newObj1[j].h === true) {
+                  v = true;
+                }
+                if(newObj1[j].e === true) {
+                  v = true;
+                }
+                if(newObj1[j].i === true) {
+                  v = true;
+                }
                 let newSubm = subm.filter((sub) => {
                   return sub.id !== id;
                 });
-                subm = [...newSubm, ...[{id: id, v: v, c: c, u: u, d: d}]];
+                subm = [...newSubm, ...[{id: id, v: v, c: c, u: u, d: d, r: r, h: h, e: e, i: i}]];
               } else {
                 id = newObj1[j].id;
                 v = newObj1[j].v;
                 c = newObj1[j].c;
                 u = newObj1[j].u;
                 d = newObj1[j].d;
-                subm = [...subm, ...[{id: id, v: v, c: c, u: u, d: d}]];
+                r = newObj1[j].r;
+                h = newObj1[j].h;
+                e = newObj1[j].e;
+                i = newObj1[j].i;
+                subm = [...subm, ...[{id: id, v: v, c: c, u: u, d: d, r: r, h: h, e: e, i: i}]];
               }
             }
           }

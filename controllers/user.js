@@ -378,11 +378,11 @@ exports.userDelete = async (req, res, next) => {
     next(error);
   }
 };
-// url: /localhost:3000/api/users/export method: 'POST'
-exports.usersExport = async (req, res, next) => {
+// url: /localhost:3000/api/users/import method: 'POST'
+exports.usersImport = async (req, res, next) => {
   const userId = req.userId;
   try {
-    const checkErr = await authScope(userId, 'user', 'c');
+    const checkErr = await authScope(userId, 'user', 'i');
     if (checkErr) {
       return next(checkErr);
     }
