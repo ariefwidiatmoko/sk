@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('../util/database');
 
-const Account = sequelize.define('account', {
+const Transaction = sequelize.define('transaction', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -10,13 +10,12 @@ const Account = sequelize.define('account', {
     primaryKey: true
   },
   code: Sequelize.STRING,
-  name: Sequelize.STRING,
-  type: Sequelize.STRING,
-  headerDetail: Sequelize.STRING,
-  level: Sequelize.STRING,
+  date: Sequelize.STRING,
+  debit: Sequelize.STRING,
+  credit: Sequelize.STRING,
   remarks: Sequelize.STRING,
   logs: Sequelize.TEXT('long'),
   deletedAt: Sequelize.STRING,
 });
 
-module.exports = Account;
+module.exports = Transaction;

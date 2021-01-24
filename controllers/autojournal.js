@@ -1,14 +1,14 @@
 const User = require('../models/user');
-const Account = require('../models/account');
+const Autojournal = require('../models/autojournal');
 const Recyclebin = require('../models/recyclebin');
 const authScope = require('../middleware/auth-scope');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const { validationResult } = require('express-validator/check');
-// url: /localhost:3000/api/members method: 'POST'
-exports.accountsGet = async (req, res, next) => {
+// url: /localhost:3000/api/auto-journals method: 'POST'
+exports.autoJournalsGet = async (req, res, next) => {
   try {
-    const checkErr = await authScope(req.userId, 'akun', 'v');
+    const checkErr = await authScope(req.userId, 'jurnal-auto', 'v');
     if (checkErr) {
       return next(checkErr);
     }
@@ -26,71 +26,79 @@ exports.accountsGet = async (req, res, next) => {
         ],
       };
     }
-    const fetchData = await Account.findAndCountAll(query);
+    const fetchData = await Autojournal.findAndCountAll(query);
     if (!fetchData) {
       const error = new Error('Data tidak ditemukan!');
       error.statusCode = 404;
       return next(error);
     }
     const countResult = fetchData.count;
-    const accountsResult = fetchData.rows;
+    const autoJournalsResult = fetchData.rows;
     res.status(200).json({
       message: 'ok',
       total: countResult,
-      accounts: accountsResult,
+      autoJournals: autoJournalsResult,
     });
   } catch (error) {
     console.log(error);
     next(error);
   }
 };
-// // url: /localhost:3000/api/accounts/create method: 'POST'
-exports.accountCreate = async (req, res, next) => {
+// // url: /localhost:3000/api/auto-journals/create method: 'POST'
+exports.autoJournalCreate = async (req, res, next) => {
   try {
-    const checkErr = await authScope(req.userId, 'akun', 'c');
+    const userId = req.userId;
+    const checkErr = await authScope(userId, 'jurnal-auto', 'c');
     if (checkErr) {
       return next(checkErr);
     }
-    // change req.body into object to pass into member.update()
+    // change req.body into object
     const obj = JSON.parse(JSON.stringify(req.body));
-    obj.createdBy = req.userId;
-    const entry = await Account.findOne({ where: { code: obj.code } });
+    obj.userId = userId;
+    const entry2 = await Autojournal.findOne({ where: { name: obj.name } });
+    if (entry2) {
+      const error = new Error('Jurnal Auto telah dibuat!');
+      error.statusCode = 422;
+      return next(error);
+    }
+    const entry = await Autojournal.findOne({ where: { code: obj.code } });
     if (entry) {
       const error = new Error('Kode sudah digunakan!');
       error.statusCode = 422;
       return next(error);
     }
-    const data = new Account(obj);
+    const data = new Autojournal(obj);
     const newEntry = await data.save();
     if (!newEntry) {
       const error = new Error('Gagal membuat data baru!');
       error.statusCode = 404;
       return next(error);
     }
-    const getNewEntry = await Account.findOne({
+    const getNewEntry = await Autojournal.findOne({
       where: { id: newEntry.id },
     });
     res.status(201).json({
       message: 'ok',
-      account: getNewEntry,
+      autoJournal: getNewEntry,
     });
   } catch (error) {
     console.log(error);
     next(error);
   }
 };
-// url: /localhost:3000/api/accounts/update/:accountId method: 'POST'
-exports.accountUpdate = async (req, res, next) => {
+// url: /localhost:3000/api/auto-journals/update/:autojournalId method: 'POST'
+exports.autoJournalUpdate = async (req, res, next) => {
   try {
-    const checkErr = await authScope(req.userId, 'akun', 'u');
+    const userId = req.userId;
+    const checkErr = await authScope(userId, 'jurnal-auto', 'u');
     if (checkErr) {
       return next(checkErr);
     }
     // change req.body into object to pass into member.update()
     const obj = JSON.parse(JSON.stringify(req.body));
-    obj.updatedBy = req.userId;
-    const accountId = req.params.accountId;
-    const entry = await Account.findOne({ where: { id: accountId } });
+    obj.updatedBy = userId;
+    const code = req.params.autojournalId;
+    const entry = await Autojournal.findOne({ where: { code: code } });
     if (!entry) {
       const error = new Error('Data tidak ditemukan!');
       error.statusCode = 404;
@@ -102,12 +110,12 @@ exports.accountUpdate = async (req, res, next) => {
       error.statusCode = 404;
       return next(error);
     }
-    const updatedEntry = await Account.findOne({
-      where: { id: accountId },
+    const getEntry = await Autojournal.findOne({
+      where: { id: updateEntry.id },
     });
     res.status(200).json({
       message: 'ok',
-      account: updatedEntry,
+      autoJournal: getEntry,
     });
   } catch (error) {
     console.log(error);

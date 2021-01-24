@@ -11,12 +11,10 @@ const Role = sequelize.define(
             allowNull: false,
             primaryKey: true
         },
-        roleName: { type: Sequelize.STRING, allowNull: false},
-        arrAuthorities: Sequelize.TEXT,
-        createdBy: Sequelize.STRING,
-        updatedBy: Sequelize.STRING,
+        name: { type: Sequelize.STRING, allowNull: false},
+        authorities: Sequelize.TEXT,
+        logs: Sequelize.TEXT('long'),
         deletedAt: Sequelize.STRING,
-        deletedBy: Sequelize.STRING,
     }
 );
 

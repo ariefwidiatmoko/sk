@@ -18,15 +18,13 @@ router.post('/photo-upload/:memberId', isAuth, memberController.memberPhotoUploa
 router.post('/photo-delete/:memberId', isAuth, memberController.memberPhotoDelete);
 // // url: /localhost:3000/api/members/delete/:memberId method: 'POST'
 router.post('/delete/:memberId', isAuth, memberController.memberDelete);
+// // url: /localhost:3000/api/members/restore/:memberId method: 'POST'
+router.post('/restore/:memberId', isAuth, memberController.memberRestore);
+// // url: /localhost:3000/api/members/hard-delete/:memberId method: 'POST'
+router.post('/hard-delete/:memberId', isAuth, memberController.memberHardDel);
 // // url: /localhost:3000/api/members/import method: 'POST'
 router.post('/import', isAuth, memberController.membersImport);
 // url: /localhost:3000/api/members/is-staff method: 'POST'
 router.post('/is-staff', isAuth, memberController.membersIsStaff);
-// // url: /localhost:3000/api/users/role-edit/:userId method: 'POST'
-// router.post('/role-edit/:userId', isAuth, userController.userRoleEdit);
-// // url: /localhost:3000/api/users/create method: 'POST'
-// router.post('/create', isAuth, userController.userCreate);
-// // url: /localhost:3000/api/users/delete/:userId method: 'POST'
-// router.post('/delete/:userId', isAuth, userController.userDelete);
 
 module.exports = router;

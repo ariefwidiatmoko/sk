@@ -1,7 +1,5 @@
-const Session = require('../models/sessionjwt');
 const User = require('../models/user');
 const Profile = require('../models/profile');
-const Role = require('../models/role');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const fse = require('fs-extra');
@@ -51,7 +49,7 @@ exports.profileEdit = async (req, res, next) => {
       error.statusCode = 404;
       return next(error);
     }
-    const fieldsToExclude = ['id', 'profileType', 'code', 'activeStatus', 'name', 'fullname', 'joinDate', 'pob', 'dob', 'email', 'phone', 'address', 'gender'];
+    const fieldsToExclude = ['id', 'type', 'code', 'activeStatus', 'name', 'fullname', 'joinDate', 'pob', 'dob', 'email', 'phone', 'address', 'gender'];
     const updateFields = Object.keys(Profile.rawAttributes).filter(s => !fieldsToExclude.includes(s));
 
     const updatedProfile = await profile.update(obj, {fields: updateFields});
@@ -106,12 +104,12 @@ exports.profilePictureUpload = async (req, res, next) => {
       error.statusCode = 404;
       return next(error);
     }
-    const newPhotos = profile.arrPhotos
-      ? profile.arrPhotos + ',' + filteredFilename
+    const newPhotos = profile.photos
+      ? profile.photos + ',' + filteredFilename
       : filteredFilename;
     const profilePic = {
       mainPhoto: profile.mainPhoto ? profile.mainPhoto : filteredFilename,
-      arrPhotos: newPhotos.toString(),
+      photos: newPhotos.toString(),
     };
     const updatedProfile = await profile.update(profilePic);
     if (!updatedProfile) {
@@ -131,8 +129,8 @@ exports.profilePictureUpload = async (req, res, next) => {
     next(error);
   }
 };
-// url: /localhost:3000/api/profile/picture-delete/:userId method: 'POST'
-exports.profilePictureDelete = async (req, res, next) => {
+// url: /localhost:3000/api/profile/photo-delete/:userId method: 'POST'
+exports.profilePhotoDelete = async (req, res, next) => {
   const userId = req.params.userId;
   const photo = req.body.photo;
   try {
@@ -154,14 +152,14 @@ exports.profilePictureDelete = async (req, res, next) => {
       error.statusCode = 404;
       return next(error);
     }
-    filteredPhotos = profile.photos.split(',').filter((photo) => {
-      return photo !== photo;
+    filteredPhotos = profile.photos.split(',').filter((itemPhoto) => {
+      return itemPhoto !== photo;
     });
     clearImage(photo);
-    const profilePic = {
-      arrPhotos: filteredPhotos.toString(),
+    const profilePhoto = {
+      photos: filteredPhotos.toString(),
     };
-    const updateProfile = await profile.update(profilePic);
+    const updateProfile = await profile.update(profilePhoto);
     if (!updateProfile) {
       const error = new Error('Hapus foto profil gagal!');
       error.statusCode = 404;

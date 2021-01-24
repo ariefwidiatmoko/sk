@@ -12,9 +12,12 @@ const Recyclebin = sequelize.define(
       primaryKey: true
     },
     itemId: Sequelize.INTEGER,
+    name: Sequelize.STRING,
     category: Sequelize.STRING,
+    table: Sequelize.STRING,
     data: Sequelize.TEXT,
-    deletedBy: Sequelize.STRING,
+    logs: Sequelize.TEXT('long'),
+    deletedAt: Sequelize.STRING,
   }
 );
 

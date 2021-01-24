@@ -9,7 +9,7 @@ module.exports = async (authId, key, scope) => {
   }
   const aS = JSON.parse(checkSession.aS);
   if (aS[0].length < 1) {
-    const error = new Error(`You're not authorized!`);
+    const error = new Error(`Anda tidak memiliki otoritas!`);
     error.statusCode = 401;
     return error;
   }
@@ -17,7 +17,7 @@ module.exports = async (authId, key, scope) => {
     return auth.id === key;
   })[0];
   if (checAuthScope[scope] !== true) {
-    const error = new Error(`You're not authorized!`);
+    const error = new Error(`Anda tidak memiliki otoritas!`);
     error.statusCode = 401;
     return error;
   }

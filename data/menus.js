@@ -52,13 +52,6 @@ const menus = [
     url: '/keuangan',
     subm: [
       {
-        id: 'akun',
-        m: 'keuangan',
-        submenuTitle: 'Akun',
-        alias: 'keuangan/akun',
-        subUrl: '/keuangan/akun',
-      },
-      {
         id: 'simpanan',
         m: 'keuangan',
         submenuTitle: 'Simpanan',
@@ -72,6 +65,50 @@ const menus = [
         alias: 'keuangan/pinjaman',
         subUrl: '/keuangan/pinjaman',
       },
+      {
+        id: 'angsuran',
+        m: 'keuangan',
+        submenuTitle: 'Angsuran',
+        alias: 'keuangan/angsuran',
+        subUrl: '/keuangan/angsuran',
+      },
+      {
+        id: 'penerimaan',
+        m: 'keuangan',
+        submenuTitle: 'Penerimaan',
+        alias: 'keuangan/penerimaan',
+        subUrl: '/keuangan/penerimaan',
+      },
+      {
+        id: 'pengeluaran',
+        m: 'keuangan',
+        submenuTitle: 'Pengeluaran',
+        alias: 'keuangan/pengeluaran',
+        subUrl: '/keuangan/pengeluaran',
+      },
+    ],
+  },
+  {
+    id: 'Akuntansi',
+    icon: 'balance-scale',
+    title: 'Akuntansi',
+    alias: 'akuntansi',
+    url: '/akuntansi',
+    subm: [
+      {
+        id: 'jurnal',
+        m: 'akuntansi',
+        submenuTitle: 'Jurnal',
+        alias: 'akuntansi/jurnal',
+        subUrl: '/akuntansi/jurnal',
+      },
+      {
+        id: 'akun',
+        m: 'akuntansi',
+        submenuTitle: 'Akun',
+        alias: 'akuntansi/akun',
+        subUrl: '/akuntansi/akun',
+      },
     ],
   },
   {
@@ -81,13 +118,6 @@ const menus = [
     alias: 'administrasi',
     url: '/administrasi',
     subm: [
-      {
-        id: 'simpanan',
-        m: 'administrasi',
-        submenuTitle: 'Simpanan',
-        alias: 'administrasi/simpanan',
-        subUrl: '/administrasi/simpanan',
-      },
       {
         id: 'agenda',
         m: 'administrasi',
@@ -198,11 +228,18 @@ const menus = [
         subUrl: '/pengaturan-umum/profil-koperasi',
       },
       {
-        id: 'ubah-password',
+        id: 'jurnal-auto',
         m: 'pengaturan-umum',
-        submenuTitle: 'Ubah Password',
-        alias: 'pengaturan-umum/ubah-password',
-        subUrl: '/pengaturan-umum/ubah-password',
+        submenuTitle: 'Jurnal Auto',
+        alias: 'pengaturan-umum/jurnal-auto',
+        subUrl: '/pengaturan-umum/jurnal-auto',
+      },
+      {
+        id: 'kode-format',
+        m: 'pengaturan-umum',
+        submenuTitle: 'Kode Format',
+        alias: 'pengaturan-umum/kode-format',
+        subUrl: '/pengaturan-umum/kode-format',
       },
     ],
   },

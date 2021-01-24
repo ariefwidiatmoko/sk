@@ -13,11 +13,9 @@ const User = sequelize.define(
     },
     username: { type: Sequelize.STRING, allowNull: false, unique: 'main' },
     password: { type: Sequelize.STRING, allowNull: false },
-    arrRoles: Sequelize.STRING,
-    createdBy: Sequelize.STRING,
-    updatedBy: Sequelize.STRING,
+    roles: Sequelize.STRING,
+    logs: Sequelize.TEXT('long'),
     deletedAt: Sequelize.STRING,
-    deletedBy: Sequelize.STRING,
   },
   {
     scopes: {

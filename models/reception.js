@@ -2,21 +2,24 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('../util/database');
 
-const Account = sequelize.define('account', {
+const Reception = sequelize.define('reception', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,
-    primaryKey: true
+    primaryKey: true,
   },
   code: Sequelize.STRING,
-  name: Sequelize.STRING,
+  date: Sequelize.STRING,
+  accountCode: Sequelize.STRING,
   type: Sequelize.STRING,
-  headerDetail: Sequelize.STRING,
-  level: Sequelize.STRING,
+  name: Sequelize.STRING,
+  sum: Sequelize.STRING,
+  unit: Sequelize.STRING,
+  total: Sequelize.STRING,
   remarks: Sequelize.STRING,
   logs: Sequelize.TEXT('long'),
   deletedAt: Sequelize.STRING,
 });
 
-module.exports = Account;
+module.exports = Reception;

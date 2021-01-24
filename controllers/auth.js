@@ -35,13 +35,13 @@ exports.login = async (req, res, next) => {
       { expiresIn: '3h' }
     );
     const getRoles = await Role.findAll({
-      attributes: ['id', 'roleName', 'arrAuthorities'],
+      attributes: ['id', 'name', 'authorities'],
     });
     let aS;
     let userRoles = [];
     let menu = [];
     let subm = [];
-    if (user.arrRoles === 'SA') {
+    if (user.roles === 'SA') {
       userRoles = ['SA'];
       let newObj0 = {};
       let newObj1 = {};
@@ -90,17 +90,17 @@ exports.login = async (req, res, next) => {
         }
       });
       aS = JSON.stringify([...menu, ...subm]);
-    } else if (user.arrRoles === null || user.arrRoles.length < 1) {
+    } else if (user.roles === null || user.roles.length < 1) {
       aS = JSON.stringify([...menu, ...subm]);
     } else {
-      userRoles = user.arrRoles.split(',');
+      userRoles = user.roles.split(',');
       const arrDetails = getRoles;
       const setAuth = [];
       arrDetails.forEach((auth) => {
         for (let i = 0; i < userRoles.length; i++) {
           if (auth.id + '' === userRoles[i] + '') {
             setAuth[setAuth.length] = {
-              detail: JSON.parse(auth.arrAuthorities),
+              detail: JSON.parse(auth.authorities),
             };
           }
         }
@@ -248,31 +248,30 @@ exports.login = async (req, res, next) => {
       }
       aS = JSON.stringify([...menu, ...subm]);
     }
-    const userSession = await Session.findOne({
+    const entrySession = await Session.findOne({
       where: { userId: user.id },
     });
-    if (!userSession) {
-      const newUserSession = new Session({
+    if (!entrySession) {
+      const newEntrySession = new Session({
         token: token,
         userId: user.id,
         aS: aS,
       });
-      newUserSession.save();
+      newEntrySession.save();
     }
-    const authScope = await Session.update(
+    const updateEntry = await Session.update(
       { token: token, aS: aS },
       { where: { userId: user.id } }
     );
-    if (!authScope) {
-      const error = new Error('Set authority failed!');
+    if (!updateEntry) {
+      const error = new Error('Gagal set otoritas!');
       error.statusCode = 404;
       return next(error);
     }
     const setUser = {
       token: token,
       userId: user.id,
-      arrRoles: user.arrRoles,
-      arrAuth: { arrRoles: userRoles, detail: { m: menu, subm: subm } },
+      authorities: { roles: userRoles, details: { m: menu, subm: subm } },
       name: user.profile.name,
       mainPhoto: user.profile.mainPhoto,
       username: user.username,

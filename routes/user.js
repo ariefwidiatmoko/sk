@@ -22,6 +22,10 @@ router.post('/role-edit/:userId', isAuth, userController.userRoleEdit);
 router.post('/create', isAuth, userController.userCreate);
 // url: /localhost:3000/api/users/delete/:userId method: 'POST'
 router.post('/delete/:userId', isAuth, userController.userDelete);
+// // url: /localhost:3000/api/users/restore/:userId method: 'POST'
+router.post('/restore/:userId', isAuth, userController.userRestore);
+// // url: /localhost:3000/api/users/hard-delete/:userId method: 'POST'
+router.post('/hard-delete/:userId', isAuth, userController.userHardDel);
 // url: /localhost:3000/api/users/import method: 'POST'
 router.post('/import', isAuth, userController.usersImport);
 

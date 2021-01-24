@@ -9,12 +9,12 @@ const Profile = sequelize.define('profile', {
     allowNull: false,
     primaryKey: true
   },
-  profileType: { type: Sequelize.STRING, allowNull: false },
+  type: { type: Sequelize.STRING, allowNull: false }, //{type: ['Administrator', 'User', 'Anggota']}
   code: Sequelize.STRING,
   name: Sequelize.STRING,
   fullname: Sequelize.STRING,
   mainPhoto: Sequelize.STRING,
-  arrPhotos: Sequelize.STRING,
+  photos: Sequelize.STRING,
   gender: Sequelize.STRING,
   pob: Sequelize.STRING,
   dob: Sequelize.STRING,
@@ -23,18 +23,16 @@ const Profile = sequelize.define('profile', {
   address: Sequelize.TEXT,
   occupation: Sequelize.STRING,
   joinDate: Sequelize.STRING,
+  memberStatus: Sequelize.BOOLEAN,
   activeStatus: Sequelize.BOOLEAN,
   maritalStatus: Sequelize.STRING,
   religion: Sequelize.STRING,
   religionDetail: Sequelize.STRING,
-  arrHobbies: Sequelize.STRING,
+  hobbies: Sequelize.STRING,
   about: Sequelize.STRING,
-  arrlink: Sequelize.TEXT,
-  arrOthers: Sequelize.TEXT,
-  createdBy: Sequelize.STRING,
-  updatedBy: Sequelize.STRING,
+  others: Sequelize.TEXT,
+  logs: Sequelize.TEXT('long'),
   deletedAt: Sequelize.STRING,
-  deletedBy: Sequelize.STRING,
 });
 
 module.exports = Profile;
