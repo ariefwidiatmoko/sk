@@ -38,6 +38,7 @@ exports.membersIndex = async (req, res, next) => {
       ],
       attributes: [
         'id',
+        'type',
         'code',
         'name',
         'fullname',
@@ -551,35 +552,8 @@ exports.membersImport = async (req, res, next) => {
     next(error);
   }
 };
-// url: /localhost:3000/api/members/is-staff method: 'POST'
-exports.membersIsStaff = async (req, res, next) => {
-  try {
-    const checkErr = await authScope(req.userId, 'pengurus', 'v');
-    if (checkErr) {
-      return next(checkErr);
-    }
-    let fetchData = await Profile.findAndCountAll({
-      where: { type: 'Pengurus' },
-    });
-    if (!fetchData) {
-      const error = new Error('Pengurus tidak ditemukan!');
-      error.statusCode = 404;
-      return next(error);
-    }
-    let fetchCount = fetchData.count;
-    let fetchRow = fetchData.rows;
-    res.status(200).json({
-      message: 'ok',
-      total: fetchCount,
-      staffs: fetchRow,
-    });
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-};
 
-const clearImage = (filePath) => {
+function clearImage(filePath) {
   filePath = path.join(__dirname, '..', filePath);
   fs.unlink(filePath, (error) => console.log(error));
-};
+}

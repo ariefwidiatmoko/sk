@@ -29,6 +29,9 @@ const journalRoutes = require('./routes/journal');
 const accountRoutes = require('./routes/account');
 const autoJournalRoutes = require('./routes/autojournal');
 const memberRoutes = require('./routes/member');
+const staffRoutes = require('./routes/staff');
+const supervisorRoutes = require('./routes/supervisor');
+const managerRoutes = require('./routes/manager');
 const userRoutes = require('./routes/user');
 const roleRoutes = require('./routes/role');
 const recyclebinRoutes = require('./routes/recyclebin');
@@ -80,6 +83,9 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/members', memberRoutes);
+app.use('/api/staffs', staffRoutes);
+app.use('/api/supervisors', supervisorRoutes);
+app.use('/api/managers', managerRoutes);
 app.use('/api/savings', savingRoutes);
 app.use('/api/loans', loanRoutes);
 app.use('/api/installments', installmentRoutes);
@@ -126,7 +132,8 @@ Sessionjwt.belongsTo(User);
 User.hasOne(Sessionjwt);
 
 sequelize
-  // .sync({ force: true })
+  // reset database if sync > force : true
+  // .sync({ force: true }) 
   .sync()
   .then((result) => {
     return User.findByPk(1);

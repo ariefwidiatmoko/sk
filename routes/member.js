@@ -1,6 +1,6 @@
 const express = require('express');
 
-const memberController = require('../../server-koperasi/controllers/member');
+const memberController = require('../controllers/member');
 const isAuth = require('../middleware/is-auth');
 
 const router = express.Router();
@@ -24,7 +24,5 @@ router.post('/restore/:memberId', isAuth, memberController.memberRestore);
 router.post('/hard-delete/:memberId', isAuth, memberController.memberHardDel);
 // // url: /localhost:3000/api/members/import method: 'POST'
 router.post('/import', isAuth, memberController.membersImport);
-// url: /localhost:3000/api/members/is-staff method: 'POST'
-router.post('/is-staff', isAuth, memberController.membersIsStaff);
 
 module.exports = router;

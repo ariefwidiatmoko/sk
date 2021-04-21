@@ -32,7 +32,7 @@ exports.login = async (req, res, next) => {
         userId: user.id,
       },
       'thisisalongsecretpasswordjwt',
-      { expiresIn: '3h' }
+      { expiresIn: '5h' }
     );
     const getRoles = await Role.findAll({
       attributes: ['id', 'name', 'authorities'],

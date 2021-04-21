@@ -9,7 +9,7 @@ const Profile = sequelize.define('profile', {
     allowNull: false,
     primaryKey: true
   },
-  type: { type: Sequelize.STRING, allowNull: false }, //{type: ['Administrator', 'User', 'Anggota']}
+  type: { type: Sequelize.STRING, allowNull: false }, //{type: ['Administrator', 'User', 'Anggota', 'Pengurus']}
   code: Sequelize.STRING,
   name: Sequelize.STRING,
   fullname: Sequelize.STRING,
